@@ -1,6 +1,14 @@
 import streamlit as st
-from agno.agent import Agent
-from agno.models.openrouter import OpenRouter
+try:
+    from agno.agent import Agent
+    from agno.models.openrouter import OpenRouter
+except ImportError:
+    import subprocess, sys
+    print("📦 检测到缺少依赖 agno，正在安装…")
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "agno"])
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "openai"])
+    from agno.agent import Agent
+    from agno.models.openrouter import OpenRouter
 
 st.set_page_config(
     page_title="AI 健康与健身计划助手",
