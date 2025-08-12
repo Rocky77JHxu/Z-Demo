@@ -2,16 +2,23 @@ import streamlit as st
 try:
     from agno.agent import Agent
     from agno.models.openrouter import OpenRouter
+    from dotenv import load_dotenv
+    load_dotenv()
 except ImportError:
     import subprocess, sys
     print("📦 检测到缺少依赖 agno，正在安装…")
     subprocess.check_call([sys.executable, "-m", "pip", "install", "agno"])
     subprocess.check_call([sys.executable, "-m", "pip", "install", "openai"])
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "python-dotenv"])
     from agno.agent import Agent
     from agno.models.openrouter import OpenRouter
+    from dotenv import load_dotenv
+    load_dotenv()
+
+glm_api_key = os.getenv("GLM_API_KEY")
 
 st.set_page_config(
-    page_title="AI 健康与健身计划助手",
+    page_title="AI 饮食与健身计划助手",
     page_icon="🏋️‍♂️",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -112,9 +119,7 @@ def main():
 
     if glm_api_key:
         try:
-            # 0a1a0ae180af4b338dff6a3dd6739a06.vXgFFlPUOOvXGMoU
-            # glm_model = OpenRouter(id="glm-4.5", base_url="https://open.bigmodel.cn/api/paas/v4/", api_key="0a1a0ae180af4b338dff6a3dd6739a06.vXgFFlPUOOvXGMoU")
-            glm_model = OpenRouter(id="glm-4.5", base_url="https://api.singinggirl.com/v1", api_key="sk-yJVpyGvbFsrydDtPg91AjZsqZC65s7Vsrg0oqJ1llKEpBaYb")
+            glm_model = OpenRouter(id="glm-4.5", base_url="https://open.bigmodel.cn/api/paas/v4/", api_key=glm_api_key)
         except Exception as e:
             st.error(f"❌ 初始化 GLM 模型出错: {e}")
             return
