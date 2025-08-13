@@ -157,7 +157,7 @@ def main():
             )
 
         if st.button("🎯 生成我的计划", use_container_width=True):
-            with st.spinner("正在为您制定专属健康与健身方案..."):
+            with st.spinner("正在为您制定专属健康与健身方案，这可能需要几分钟时间..."):
                 try:
                     dietary_agent = Agent(
                         name="饮食专家",
