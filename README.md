@@ -1,6 +1,6 @@
 # Z-Demo
 
-基于智谱（https://github.com/zai-org）开源生态的轻量 Demo 合集。目标：用最小实现串起“可跑通”的应用范式，便于学习与二次开发。
+基于智谱（[zai-org](https://github.com/zai-org)）开源生态的轻量 Demo 合集。目标：用最小实现串起“可跑通”的应用范式，便于学习与二次开发。
 
 ## 当前 Demo
 
