@@ -2,20 +2,13 @@ import streamlit as st
 try:
     from agno.agent import Agent
     from agno.models.openrouter import OpenRouter
-    from dotenv import load_dotenv
-    load_dotenv()
 except ImportError:
     import subprocess, sys
     print("📦 检测到缺少依赖 agno，正在安装…")
     subprocess.check_call([sys.executable, "-m", "pip", "install", "agno"])
     subprocess.check_call([sys.executable, "-m", "pip", "install", "openai"])
-    subprocess.check_call([sys.executable, "-m", "pip", "install", "python-dotenv"])
     from agno.agent import Agent
     from agno.models.openrouter import OpenRouter
-    from dotenv import load_dotenv
-    load_dotenv()
-
-glm_api_key = os.getenv("GLM_API_KEY")
 
 st.set_page_config(
     page_title="AI 饮食与健身计划助手",
@@ -94,7 +87,7 @@ def main():
         st.session_state.qa_pairs = []
         st.session_state.plans_generated = False
 
-    st.title("🏋️‍♂️ AI 健康与健身计划助手")
+    st.title("🏋️‍♂️ AI 饮食与健身计划助手")
     st.markdown("""
         <div style='background-color: #00008B; padding: 1rem; border-radius: 0.5rem; margin-bottom: 2rem; color: white;'>
         根据您的目标与喜好，为您量身定制饮食和健身计划。
@@ -111,15 +104,27 @@ def main():
         )
         
         if not glm_api_key:
-            st.warning("⚠️ 请输入您的 API Key 才能生成计划")
-            st.markdown("[点击此处获取 API Key](https://bigmodel.cn/)")
+            st.warning("⚠️ 请输入您的 GLM API Key 才能生成计划")
+            st.markdown("[点击此处获取 GLM API Key](https://bigmodel.cn/)")
             return
         
-        st.success("✅ API Key 已接受！")
+        st.success("✅ GLM API Key 已接受！")
 
     if glm_api_key:
         try:
-            glm_model = OpenRouter(id="glm-4.5", base_url="https://open.bigmodel.cn/api/paas/v4/", api_key=glm_api_key)
+            try:
+                secret_key = st.secrets.get("glm_api_key")
+            except Exception:
+                secret_key = None
+
+            api_key = secret_key or glm_api_key
+            glm_model = OpenRouter(
+                id="glm-4.5",
+                base_url="https://open.bigmodel.cn/api/paas/v4/",
+                api_key=api_key,
+                max_tokens=16384,
+                timeout=120,
+            )
         except Exception as e:
             st.error(f"❌ 初始化 GLM 模型出错: {e}")
             return
@@ -235,8 +240,8 @@ def main():
                         dietary_plan = st.session_state.dietary_plan
                         fitness_plan = st.session_state.fitness_plan
 
-                        context = f"饮食计划: {dietary_plan.get('meal_plan', '')}\n\n健身计划: {fitness_plan.get('routine', '')}"
-                        full_context = f"{context}\n用户问题: {question_input}"
+                        context = f"刚刚，你为用户推荐了一些包含饮食和健康的计划，包括：\n\n# **饮食计划:** {dietary_plan.get('meal_plan', '')}\n\n# **健身计划:** {fitness_plan.get('routine', '')}"
+                        full_context = f"{context}\n\n\n# **用户问题:** {question_input}\n\n请根据你为用户推荐的饮食和健身计划，回答用户新的问题。"
 
                         try:
                             agent = Agent(model=glm_model, show_tool_calls=True, markdown=True)
