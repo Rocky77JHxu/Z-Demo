@@ -8,6 +8,7 @@
 - 模型适配：`agno.models.openrouter.OpenRouter`
 - 默认模型：GLM-4.5（`id="glm-4.5"`，`base_url=https://open.bigmodel.cn/api/paas/v4/`）
 
+> （推下公众号文章）一文教你如何基于 Streamlit 快速构建智能体应用：[模型交互门面：Gradio vs. Streamlit](https://mp.weixin.qq.com/s/1Y7TUfuaDT-rVN7oB94v-g)
 ---
 
 ## ✨ 功能特性
